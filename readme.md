@@ -18,6 +18,27 @@ Template files may contain variables (`{{ title }}`), which are expanded at the
 time of buffer creation.  The main purpose of the templates is to add
 boilerplate code to new files.
 
+## Installation
+
+Using [vim-plug](https://github.com/junegunn/vim-plug)
+
+```vim
+Plug 'vimlab/t.vim', { do: 'npm install' }
+```
+
+## Template engine
+
+Lodash is used by default to compile templates, to use another supported
+template engine:
+
+```vim
+" Handlebars
+Plug 'vimlab/t.vim', { do: 'npm install; npm install handlebars' }
+
+" Liquid
+Plug 'vimlab/t.vim', { do: 'npm install; npm install liquid-node' }
+```
+
 ## Templates
 
 When editing a new file (not created yet, eg. BufNewFile is triggered), the
@@ -32,50 +53,50 @@ Template variables are Mustache like template placeholder: eg. `{{ title }}`
 
 The following variables are available for expansion in templates:
 
-- `{ day }`, `{ year }`, `{ month }`
+- `{{ day }}`, `{{ year }}`, `{{ month }}`
 
 Current day of the month, year, and month of the year,
 as numeric values.
 
-- `{ data }`
+- `{{ data }}`
 
 Current date in `YYYY-mm-dd` format.
 
-- `{ time }`
+- `{{ time }}`
 
 Current time in `HH:MM` format.
 
-- `{ datetime }`
+- `{{ datetime }}`
 
 Current full date (date and time) in `YYYY-mm-dd HH:MM`
 format.
 
-- `{ filename }`
+- `{{ filename }}`
 
 File name, without extension.
 
-- `{ ext }`
+- `{{ ext }}`
 
 File extension (component after the last period).
 
-- `{ basename }`
+- `{{ basename }}`
 
 File name, with extension.
 
-- `{ mail }`
+- `{{ mail }}`
 
 E-mail address of the current user. This is the value of
 `git config --global user.email`
 
-- `{ user }`
+- `{{ user }}`
 
 Current logged-in user name (`$USER`)
 
-- `{ license }`
+- `{{ license }}`
 
 Expands to the string `MIT` by default or the value of package.json "license" property.
 
-`{ hostname }`
+`{{ hostname }}`
 
 Current host name.
 
