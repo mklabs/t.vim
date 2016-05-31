@@ -26,7 +26,7 @@ Using [vim-plug](https://github.com/junegunn/vim-plug)
 Plug 'vimlab/t.vim', { do: 'npm install' }
 ```
 
-## Template engine
+## Template engines
 
 Lodash is used by default to compile templates, to use another supported
 template engine:
@@ -42,10 +42,20 @@ Plug 'vimlab/t.vim', { do: 'npm install; npm install liquid-node' }
 ## Templates
 
 When editing a new file (not created yet, eg. BufNewFile is triggered), the
-plugin will try to load a template from `~/vim/templates` with the exact same
-name, or try to fallback to `skel.{ext}`
+plugin will try to load a template from `~/vim/templates` directory.
 
-Put your skeleton files in `~/.vim/templates`
+Templates are loaded using the following search order:
+
+1. First try loading by filename
+2. Then by file extension `extension.extension`
+3. Then by a more general one `t.extension`
+
+For instance, `vim foo.js` will try to load `~/.vim/templates/foo.js`, then
+`~/.vim/templates/js.js`, then `~/.vim/templates/t.js`.
+
+See my vim
+[templates](https://github.com/mklabs/vimfiles/tree/master/templates) folder
+for a list of templates for general web / nodejs / vim development.
 
 ## Variables
 
