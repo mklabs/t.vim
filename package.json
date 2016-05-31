@@ -1,0 +1,9 @@
+{
+  "name": "t.vim",
+  "version": "1.0.0",
+  "description": "A minimalist vim template plugin thing. Heavily based on tpope former\r ztemplate plugin.",
+  "license": "MIT",
+  "dependencies": {
+    "read-pkg-up": "^1.0.1"
+  }
+}

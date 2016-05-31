@@ -1,37 +1,140 @@
-# t.vim
+# t - Tiny template plugin for vim
 
-**Tiny template plugin for vim**
+A minimalist vim template plugin thing. Heavily based on tpope former
+ztemplate plugin, that was found in:
 
-A minimalist vim template plugin. Uses Mustache like template placeholder: `{{ title }}`
+> https://github.com/tpope/tpope/blob/master/.vim/plugin/ztemplate.vim.
 
-When editing a new file, the plugin will try to load a template from:
+Unfortunately, ztemplate is no more and I cannot find it anymore. This plugin
+is based on the git history of my vimfiles repo where I initially comitted a
+copy.
 
-- ./.templates
-- ./templates
-- ~/.templates
-- ~/.config/t
-- ~/.config/templates
-- ~/.vim/templates
+## Description
 
-Local templates, relative to current directory  `templates/` or `.templates/` are used when
-found over the more general one located in `$HOME`.
+This is a simple plug-in allowing to have template files per file type, which
+will be used as starting point when creating new buffers.
 
-You can configure the list of loading directories with:
+Template files may contain variables (`{{ title }}`), which are expanded at the
+time of buffer creation.  The main purpose of the templates is to add
+boilerplate code to new files.
+
+## Templates
+
+When editing a new file (not created yet, eg. BufNewFile is triggered), the
+plugin will try to load a template from `~/vim/templates` with the exact same
+name, or try to fallback to `skel.{ext}`
+
+Put your skeleton files in `~/.vim/templates`
+
+## Variables
+
+Template variables are Mustache like template placeholder: eg. `{{ title }}`
+
+The following variables are available for expansion in templates:
+
+- `{ day }`, `{ year }`, `{ month }`
+
+Current day of the month, year, and month of the year,
+as numeric values.
+
+- `{ data }`
+
+Current date in `YYYY-mm-dd` format.
+
+- `{ time }`
+
+Current time in `HH:MM` format.
+
+- `{ datetime }`
+
+Current full date (date and time) in `YYYY-mm-dd HH:MM`
+format.
+
+- `{ filename }`
+
+File name, without extension.
+
+- `{ ext }`
+
+File extension (component after the last period).
+
+- `{ basename }`
+
+File name, with extension.
+
+- `{ mail }`
+
+E-mail address of the current user. This is the value of
+`git config --global user.email`
+
+- `{ user }`
+
+Current logged-in user name (`$USER`)
+
+- `{ license }`
+
+Expands to the string `MIT` by default or the value of package.json "license" property.
+
+`{ hostname }`
+
+Current host name.
+
+
+## Overriding / Defining Variables
+
+You can change the default value of any predefined variables, or add new ones
+using `t#define(name, command)`
+
+- `name` Variable name
+- `command` System command to evaluate and use STDOUT result
+
+For instance, to change the default value of the `{ name }` variables in templates
 
 ```vim
-" order of precedence is in reverse order
-let g:t_load_dirs = ['~/.vim/templates', '~/.templates', '~/.config/t/', '~/.config/templates', './.templates', './templates']
+t#define('name', 'git config --global user.mail')
 ```
 
-Templates are standard Handlebars/Mustache like templates named:
+Here is the default definitions t defines by default:
 
-- `default.<language>` for a general template for the language
+```vim
+" Dates
+t#define('day',       'date "%d"')
+t#define('year',      'date "%Y"')
+t#define('month',     'date "%m"')
+t#define('date',      'date "%Y-%m-%d"')
+t#define('time',      'date "%k:%M"')
+t#define('datetime',  'date "%Y-%m-%d %k:%M"')
 
-- `filename.<language>` for a more specific one to load when editing a buffer with same filename.
+" File
+" $filename is expanded to buffer absolute filepath
+t#define('filepath',  '$filepath')
+t#define('ext',       'node -pe "path.extname(\'$filepath\')"')
+t#define('basename',  'node -pe "path.basename(\'$filepath\')"')
+t#define('filename',  'node -pe "path.basename(\'$filepath\').replace(\'$ext\', '')"')
 
-Ex.`:e package.json` would try to load `package.json` and `default.json` in order.
+" User
+t#define('name', '$USER')
+t#define('mail', 'git config --global user.email')
 
-**Mappings**
+" Package.json
+t#defineNode('name', 'require("read-pkg-up").name')
+t#defineNode('version', 'require("read-pkg-up").version')
+t#defineNode('description', 'require("read-pkg-up").description')
+t#defineNode('license', 'require("read-pkg-up").license')
+" etc ..
+````
 
-When templates have some placeholder in them, `<C-t>`, `<C-h>`, `<C-j>`,
-`<C-k>`, or `<C-l>` can be used to jump to the next one.
+## Package.json variables
+
+If the buffer is within a project with a package.json, every field is defined
+as a template variable.
+
+Arrays and Objects are stringified using `JSON.stringify()`
+
+## Prompts
+
+Every template variable without a default value is going to generate a prompt.
+
+---
+
+> Work in progress
