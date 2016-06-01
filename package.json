@@ -9,7 +9,7 @@
     "example": "examples"
   },
   "scripts": {
-    "test": "mocha -R spec"
+    "test": "bake test"
   },
   "dependencies": {
     "140-opts": "^1.1.0",
