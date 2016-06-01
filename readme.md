@@ -3,13 +3,6 @@
 >  A minimalist template / scaffolding engine for text editors.
 > [![Build Status](https://travis-ci.org/vimlab/t.vim.svg?branch=master)](https://travis-ci.org/vimlab/t.vim)
 
-It provides a basic CLI `tvim` to parse and evaluate templates using
-Handlebars, and to write the result to STDOUT.
-
-It was designed to work along the included Vim / Neovim plugin, but
-integrations to other text editors should be a simple process
-([#atom](https://github.com/vimlab/t.vim/issues/1))
-
 ## Description
 
 This is a simple plug-in allowing to have template files per file type, which
@@ -18,6 +11,17 @@ will be used as starting point when creating new buffers.
 Template files may contain variables (`{{ title }}`), which are expanded at the
 time of buffer creation.  The main purpose of the templates is to add
 boilerplate code to new files.
+
+### cli
+
+Provides a basic CLI `tvim (1)` to parse and evaluate templates using
+Handlebars, and write the result to STDOUT.
+
+It was designed to work along the included Vim / Neovim plugin, but
+integrations to other text editors should be possible
+([#atom](https://github.com/vimlab/t.vim/issues/1))
+
+### vim
 
 The vim plugin is heavily based on tpope former ztemplate plugin, that was
 found in:
@@ -41,10 +45,13 @@ $ npm install tvim -g
 Using [vim-plug](https://github.com/junegunn/vim-plug)
 
 ```vim
-Plug 'vimlab/t.vim', { do: 'npm install' }
+Plug 'vimlab/t.vim', { do: 'npm install --prod --cache-min Infinity -g' }
+" npm: --prod to skip devDependencies
+" npm: --cache-min Infinity to speed up install process
+" npm: -g to make tvim available in $PATH
 ```
 
-For other package managers, make sure to run `npm install` within the bundle
+For other package managers, make sure to run `npm install -g` within the bundle
 directory.
 
 **atom**
