@@ -62,7 +62,7 @@ endfunction
 
 function! t#load(filename)
   call t#log('Load template for ', a:filename)
-  silent exe 'keepalt r!tvim -d --file ' . a:filename
+  silent exe 'keepalt r!tvim --file ' . a:filename
 endfunction
 
 function! t#config(...)
