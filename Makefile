@@ -2,16 +2,21 @@
 all: help
 
 help:
-	echo help
+	bake -h
 
 babel:
 	babel lib/ -d src/
 
-test: babel
+test: eslint babel mocha
+
+mocha:
 	mocha -R spec
 
 eslint:
-	DEBUG="eslint:cli-engine" eslint .
+	eslint .
+
+fix:
+	eslint . --fix
 
 watch:
 	watchd lib/**.js test/**.js package.json -c 'bake babel'
@@ -24,5 +29,5 @@ version:
 push:
 	git push origin master --tags
 
-publish:
+publish: test
 	npm publish
