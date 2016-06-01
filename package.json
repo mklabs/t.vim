@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "140-opts": "^1.1.0",
+    "debug": "^2.2.0",
     "handlebars": "^4.0.5",
     "moment": "^2.13.0",
     "read-pkg-up": "^1.0.1"
