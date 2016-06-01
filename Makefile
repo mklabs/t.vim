@@ -9,6 +9,9 @@ babel:
 
 test: eslint babel mocha
 
+test-cli:
+	node bin/tvim --file foo.js --template test/templates/javascript.template.js
+
 mocha:
 	mocha -R spec
 

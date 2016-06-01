@@ -100,9 +100,11 @@ function! t#load(template, filename)
   silent exe 'keepalt r!tvim --file ' . a:filename . ' --template ' . a:template
 endfunction
 
-function! t#config()
-  let file = system('tvim --json')
-  exe "edit " . file
+function! t#config(...)
+  let type = a:0 > 0 ? a:1 : 'config'
+
+  let file = system('tvim --' . type)
+  exe "keepalt edit " . file
 endfunction
 
 function! t#edit(filename)
