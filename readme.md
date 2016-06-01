@@ -1,12 +1,14 @@
 # t - Tiny template plugin for vim
 
-A minimalist template / scaffolding engine for text editors.
+>  A minimalist template / scaffolding engine for text editors.
+> [![Build Status](https://travis-ci.org/vimlab/t.vim.svg?branch=master)](https://travis-ci.org/vimlab/t.vim)
 
 It provides a basic CLI `tvim` to parse and evaluate templates using
 Handlebars, and write the result to STDOUT.
 
 It was designed to work along the included Vim / Neovim plugin, but
-integrations to other text editors should be a simple process ([#atom](https://github.com/vimlab/t.vim/issues/1))
+integrations to other text editors should be a simple process
+([#atom](https://github.com/vimlab/t.vim/issues/1))
 
 The vim plugin is heavily based on tpope former ztemplate plugin, that was
 found in:
