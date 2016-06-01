@@ -23,6 +23,20 @@ function! t#logs()
   return s:logs
 endfunction
 
+function! t#join(...)
+  let list = a:000
+  let value = join(list, '/')
+
+  " clean up windows \ separator
+  let value = substitute(value, '\', '/', 'g')
+
+  " cleanup any consecutive slash
+  let value = substitute(value, '/\+', '/', 'g')
+
+  " lastly, return the correct platform specific path
+  return substitute(value, '/', has('win32') ? '\' : '/', 'g')
+endfunction
+
 function! t#messages()
   for log in t#logs()
     echohl Commment | echomsg log | echohl None
@@ -43,7 +57,7 @@ function! t#filename(filename)
     let ext = (fnamemodify(a:filename, ':t'))
   endif
 
-  call t#read(ext, a:filename)
+  call t#read(ext, t#join(a:filename))
 endfunction
 
 function! t#read(type, filename)
@@ -54,24 +68,25 @@ function! t#read(type, filename)
     return
   endif
 
-  call t#load(template, a:filename)
+  call t#load(t#join(template), a:filename)
 endfunction
 
 function! t#find(filename)
   call t#log('Template find ', a:filename)
 
   let ext = fnamemodify(a:filename, ":e")
+  let ft = &filetype
   let templates = join(['~', s:vimdir, 'templates'], s:sep)
-  let filetype = join([templates, ext . '.' . ext], s:sep)
+  let filetype = join([templates, ft . '.template'], s:sep)
   let file = join([templates, a:filename], s:sep)
-  let skel = join([templates, 't.' . ext], s:sep)
+  let skel = join([templates, 't.' . ft], s:sep)
 
   " first try loading by filename
   " then by file extension
   " then by a more general skeleton one
   return t#check(expand(file)) ? file :
     \ t#check(expand(filetype)) ? filetype :
-    \ t#check(expand(skel)) ? skel :
+    \ t#check(expand(skel)) ? filetype :
     \ ''
 endfunction
 
@@ -92,12 +107,15 @@ endfunction
 
 function! t#edit(filename)
   call t#log('Edit template ', a:filename)
-  let ext = fnamemodify(a:filename, ":e")
+  let ft = &filetype
   let templates = join(['~', s:vimdir, 'templates'], s:sep)
-  let file = expand(join([templates, ext . '.' . ext], s:sep))
+  let file = join([templates, ft . '.template'], s:sep)
 
   let dirname = fnamemodify(file, ':h')
-  call t#log('Create dir ', dirname)
-  call mkdir(dirname, 'p')
+  if !isdirectory(dirname)
+    call t#log('Create dir ', dirname)
+    call mkdir(dirname, 'p')
+  endif
+
   exe "keepalt edit " . file
 endfunction

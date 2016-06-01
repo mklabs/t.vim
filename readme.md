@@ -80,11 +80,11 @@ the plugin will try to load a template from `~/vim/templates` directory.
 Templates are loaded using the following search order:
 
 1. First try loading by filename
-2. Then by file extension `extension.extension`
-3. Then by a more general one `t.extension`
+2. Then by filetype `filetype.template`
+3. Then by a more general one `t.filetype`
 
 For instance, `vim foo.js` will try to load `~/.vim/templates/foo.js`, then
-`~/.vim/templates/js.js`, then `~/.vim/templates/t.js`.
+`~/.vim/templates/javascript.template`, then `~/.vim/templates/t.javascript`.
 
 See my vim
 [templates](https://github.com/mklabs/vimfiles/tree/master/templates) folder
@@ -201,7 +201,7 @@ let definitions = {
 
 ### TemplateEdit
 
-`:TemplateEdit` is an helper to `:edit ~/.vim/templates/${ext}.${ext}` and
+`:TemplateEdit` is an helper to `:edit ~/.vim/templates/${filetype}.template` and
 quickly add or edit a template for the current filetype.
 
 ### TemplateConfig
