@@ -78,7 +78,7 @@ function! t#edit(filename)
   let templates = join(['~', s:vimdir, 'templates'], s:sep)
   let file = join([templates, ft . '.template'], s:sep)
 
-  let dirname = fnamemodify(file, ':h')
+  let dirname = expand(fnamemodify(file, ':h'))
   if !isdirectory(dirname)
     call t#log('Create dir ', dirname)
     call mkdir(dirname, 'p')
