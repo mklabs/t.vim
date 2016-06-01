@@ -1,13 +1,21 @@
 # t - Tiny template plugin for vim
 
-A minimalist vim template plugin thing. Heavily based on tpope former
-ztemplate plugin, that was found in:
+A minimalist template / scaffolding engine for text editors.
+
+It provides a basic CLI `tvim` to parse and evaluate templates using
+Handlebars, and write the result to STDOUT.
+
+It was designed to work along the included Vim / Neovim plugin, but
+integrations to other text editors should be a simple process ([#atom](https://github.com/vimlab/t.vim/issues/1))
+
+The vim plugin is heavily based on tpope former ztemplate plugin, that was
+found in:
 
 > https://github.com/tpope/tpope/blob/master/.vim/plugin/ztemplate.vim.
 
 Unfortunately, ztemplate is no more and I cannot find it anymore. This plugin
-is based on the git history of my vimfiles repo where I initially comitted a
-copy.
+is based on the git history of my vimfiles repo where I once checked in a copy
+of ztemplate.vim
 
 ## Description
 
@@ -20,31 +28,54 @@ boilerplate code to new files.
 
 ## Installation
 
+**cli**
+
+```
+$ npm install tvim -g
+```
+
+**vim**
+
 Using [vim-plug](https://github.com/junegunn/vim-plug)
 
 ```vim
 Plug 'vimlab/t.vim', { do: 'npm install' }
 ```
 
-<!--
-## Template engines
+For other package managers, make sure to run `npm install` within the bundle
+directory.
 
-Lodash is used by default to compile templates, to use another supported
-template engine:
+**atom**
 
-```vim
-" Handlebars
-Plug 'vimlab/t.vim', { do: 'npm install; npm install handlebars' }
+> wip
 
-" Liquid
-Plug 'vimlab/t.vim', { do: 'npm install; npm install liquid-node' }
-```
--->
+## CLI
+
+### Description
+
+`tvim` command is used to parse templates and evaluate them with Handlebars.
+
+It builds template variables based on the provided filename, [t.json](./t.json)
+configuration file and local project `package.json` properties, if it exists.
+
+**Options**
+
+- `--file`      - Must be set to the created file (in Vim this is the new Buffer filepath)
+- `--template`  - Full path value leading the Handlebars template
+
+### Configuration
+
+`tvim` behavior and default variables can be configured with [t.json](./t.json) file.
+
+- [Definitions](#definitions) A simple `{ name: command }` mapping to globally
+  define template variables.
+- [Globs](#globs) Configure minimatch based templates. Great to setup a common
+  boilerplate for Models when creating `app/models/*.js` files.
 
 ## Templates
 
-When editing a new file (not created yet, eg. BufNewFile is triggered), the
-plugin will try to load a template from `~/vim/templates` directory.
+**Vim** When editing a new file (not created yet, eg. BufNewFile is triggered),
+the plugin will try to load a template from `~/vim/templates` directory.
 
 Templates are loaded using the following search order:
 
@@ -58,6 +89,10 @@ For instance, `vim foo.js` will try to load `~/.vim/templates/foo.js`, then
 See my vim
 [templates](https://github.com/mklabs/vimfiles/tree/master/templates) folder
 for a list of templates for general web / nodejs / vim development.
+
+**Note** The logic to find the best template per filename and extension is in
+vimscript, but may be ported to the cli for easier integration in other
+editors.
 
 ## Variables
 
@@ -112,6 +147,10 @@ Expands to the string `MIT` by default or the value of package.json "license" pr
 
 Current host name.
 
+Additionnaly, any variable definitions you defined in `t.json` will be used
+instead of the defaults. If a the `filename` is within a project with a
+package.json (find up), its fields are used to expand corresponding variables
+in templates.
 
 ## Overriding / Defining Variables
 
@@ -154,6 +193,23 @@ let definitions = {
 };
 ```
 
+## Commands
+
+### Template
+
+`:Template` can be used to expand the template content in the current buffer.
+
+### TemplateEdit
+
+`:TemplateEdit` is an helper to `:edit ~/.vim/templates/${ext}.${ext}` and
+quickly add or edit a template for the current filetype.
+
+### TemplateConfig
+
+`:TemplateConfig` is an helper to `:edit t.json` file used to define template
+variables. You can simply add, edit or remove definitions by editing the JSON
+content and saving the file.
+
 <!--
 ## Package.json variables
 
@@ -165,7 +221,21 @@ Arrays and Objects are stringified using `JSON.stringify()`
 ## Prompts
 
 Every template variable without a default value is going to generate a prompt.
+
+## Template engines
+
+Lodash is used by default to compile templates, to use another supported
+template engine:
+
+```vim
+" Handlebars
+Plug 'vimlab/t.vim', { do: 'npm install; npm install handlebars' }
+
+" Liquid
+Plug 'vimlab/t.vim', { do: 'npm install; npm install liquid-node' }
+```
 -->
+
 
 ---
 
