@@ -26,6 +26,7 @@ Using [vim-plug](https://github.com/junegunn/vim-plug)
 Plug 'vimlab/t.vim', { do: 'npm install' }
 ```
 
+<!--
 ## Template engines
 
 Lodash is used by default to compile templates, to use another supported
@@ -38,6 +39,7 @@ Plug 'vimlab/t.vim', { do: 'npm install; npm install handlebars' }
 " Liquid
 Plug 'vimlab/t.vim', { do: 'npm install; npm install liquid-node' }
 ```
+-->
 
 ## Templates
 
@@ -68,7 +70,7 @@ The following variables are available for expansion in templates:
 Current day of the month, year, and month of the year,
 as numeric values.
 
-- `{{ data }}`
+- `{{ date }}`
 
 Current date in `YYYY-mm-dd` format.
 
@@ -106,7 +108,7 @@ Current logged-in user name (`$USER`)
 
 Expands to the string `MIT` by default or the value of package.json "license" property.
 
-`{{ hostname }}`
+- `{{ hostname }}`
 
 Current host name.
 
@@ -114,47 +116,45 @@ Current host name.
 ## Overriding / Defining Variables
 
 You can change the default value of any predefined variables, or add new ones
-using `t#define(name, command)`
+using `:TemplateConfig` to edit [t.json](./t.json) configuration file.
+
+For instance, to change the default value of the `{ name }` variables in
+templates, use `{ name: command }` key / value pair:
 
 - `name` Variable name
-- `command` System command to evaluate and use STDOUT result
+- `command` System command to execute and evaluate STDOUT result
 
-For instance, to change the default value of the `{ name }` variables in templates
-
-```vim
-t#define('name', 'git config --global user.mail')
+```json
+{
+  "user": "git config --global user.name"
+}
 ```
 
-Here is the default definitions t defines by default:
+Here is the default values for all predefined template variables.
 
-```vim
-" Dates
-t#define('day',       'date "%d"')
-t#define('year',      'date "%Y"')
-t#define('month',     'date "%m"')
-t#define('date',      'date "%Y-%m-%d"')
-t#define('time',      'date "%k:%M"')
-t#define('datetime',  'date "%Y-%m-%d %k:%M"')
+```
+// File
+let ext = path.extname(filepath);
+let basename = path.basename(filepath);
+let filename = basename.replace(ext, '');
 
-" File
-" $filename is expanded to buffer absolute filepath
-t#define('filepath',  '$filepath')
-t#define('ext',       'node -pe "path.extname(\'$filepath\')"')
-t#define('basename',  'node -pe "path.basename(\'$filepath\')"')
-t#define('filename',  'node -pe "path.basename(\'$filepath\').replace(\'$ext\', '')"')
+// Date
+let day = moment().format('d');
+let year = moment().format('YYYY');
+let month = moment().format('M');
+let date = moment().format('YYYY-M-d')
+let datetime = moment().format('YYYY-M-d HH:mm')
 
-" User
-t#define('name', '$USER')
-t#define('mail', 'git config --global user.email')
+// Misc
+let user = process.env.USER;
+let definitions = {
+  hostname: 'hostname',
+  mail:     'git config --global user.email',
+  name:     'git config --global user.name'
+};
+```
 
-" Package.json
-t#defineNode('name', 'require("read-pkg-up").name')
-t#defineNode('version', 'require("read-pkg-up").version')
-t#defineNode('description', 'require("read-pkg-up").description')
-t#defineNode('license', 'require("read-pkg-up").license')
-" etc ..
-````
-
+<!--
 ## Package.json variables
 
 If the buffer is within a project with a package.json, every field is defined
@@ -165,6 +165,7 @@ Arrays and Objects are stringified using `JSON.stringify()`
 ## Prompts
 
 Every template variable without a default value is going to generate a prompt.
+-->
 
 ---
 

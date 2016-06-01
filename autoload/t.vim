@@ -1,64 +1,103 @@
 if exists("g:loaded_t") || v:version < 700 || &cp
-  " finish
+  finish
 endif
+
 let g:loaded_t = 1
 
 let s:sep = has('win32') ? '\' : '/'
 let s:vimdir = has('win32') ? 'vimfiles' : '.vim'
+let s:debug = exists('g:t_debug')
+
+let s:logs = []
+function! t#debug(...)
+  let msg = join(a:000, ' ')
+
+  if s:debug
+    echohl String | echomsg msg | echohl None
+  else
+    call add(s:logs, msg)
+  end
+endfunction
+
+function! t#logs()
+  return s:logs
+endfunction
+
+function! t#messages()
+  for log in t#logs()
+    echohl Commment | echomsg log | echohl None
+  endfor
+endfunction
 
 function! t#log(...)
   let args = a:000
   let msg = join(args, ' ')
-  call vmf#debug('String', 't>> ', msg)
+  call t#debug('t>> ', msg)
 endfunction
 
-function! t#LoadFilename(filename)
+function! t#filename(filename)
   call t#log('Loading ', a:filename)
 
-  let ext = fnamemodify(a:filename,':e')
+  let ext = fnamemodify(a:filename, ':e')
   if ext == ''
-    let ext = (fnamemodify(a:filename,':t'))
+    let ext = (fnamemodify(a:filename, ':t'))
   endif
-  call t#ReadTemplate(ext,a:filename)
+
+  call t#read(ext, a:filename)
 endfunction
 
-function! t#ReadTemplate(type, filename)
+function! t#read(type, filename)
   call t#log('Read template ', a:type, a:filename)
 
-  let template = t#TemplateFind(fnamemodify(a:filename, ':t'))
+  let template = t#find(fnamemodify(a:filename, ':t'))
   if empty(template)
     return
   endif
 
-  call t#LoadTemplate(template)
+  call t#load(template, a:filename)
 endfunction
 
-function! t#Check(file)
-  call t#log('Check ', a:file)
-  return filereadable(a:file)
-endfunction
-
-function! t#TemplateFind(filename)
+function! t#find(filename)
   call t#log('Template find ', a:filename)
 
   let ext = fnamemodify(a:filename, ":e")
   let templates = join(['~', s:vimdir, 'templates'], s:sep)
-  let file = join([templates, a:filename], s:sep)
-  let skel = join([templates, 't' . ext], s:sep)
   let filetype = join([templates, ext . '.' . ext], s:sep)
+  let file = join([templates, a:filename], s:sep)
+  let skel = join([templates, 't.' . ext], s:sep)
 
   " first try loading by filename
   " then by file extension
   " then by a more general skeleton one
-  return s:Check(expand(file)) ? file :
-    \ s:Check(expand(filetype)) ? filetype :
-    \ s:Check(expand(skel)) ? skel :
+  return t#check(expand(file)) ? file :
+    \ t#check(expand(filetype)) ? filetype :
+    \ t#check(expand(skel)) ? skel :
     \ ''
 endfunction
 
-function! s:LoadTemplate(template)
-  call s:log('Load template ', a:template)
-  silent exe "0r ".a:template
+function! t#check(file)
+  call t#log('Check ', a:file)
+  return filereadable(a:file)
 endfunction
 
-autocmd BufNewFile * call s:LoadFilename(expand("<amatch>"))
+function! t#load(template, filename)
+  call t#log('Load template ', a:template)
+  silent exe 'keepalt r!tvim --file ' . a:filename . ' --template ' . a:template
+endfunction
+
+function! t#config()
+  let file = system('tvim --json')
+  exe "edit " . file
+endfunction
+
+function! t#edit(filename)
+  call t#log('Edit template ', a:filename)
+  let ext = fnamemodify(a:filename, ":e")
+  let templates = join(['~', s:vimdir, 'templates'], s:sep)
+  let file = expand(join([templates, ext . '.' . ext], s:sep))
+
+  let dirname = fnamemodify(file, ':h')
+  call t#log('Create dir ', dirname)
+  call mkdir(dirname, 'p')
+  exe "keepalt edit " . file
+endfunction
