@@ -57,47 +57,12 @@ function! t#filename(filename)
     let ext = (fnamemodify(a:filename, ':t'))
   endif
 
-  call t#read(ext, t#join(a:filename))
+  call t#load(a:filename)
 endfunction
 
-function! t#read(type, filename)
-  call t#log('Read template ', a:type, a:filename)
-
-  let template = t#find(fnamemodify(a:filename, ':t'))
-  if empty(template)
-    return
-  endif
-
-  call t#load(t#join(template), a:filename)
-endfunction
-
-function! t#find(filename)
-  call t#log('Template find ', a:filename)
-
-  let ext = fnamemodify(a:filename, ":e")
-  let ft = &filetype
-  let templates = join(['~', s:vimdir, 'templates'], s:sep)
-  let filetype = join([templates, ft . '.template'], s:sep)
-  let file = join([templates, a:filename], s:sep)
-  let skel = join([templates, 't.' . ft], s:sep)
-
-  " first try loading by filename
-  " then by file extension
-  " then by a more general skeleton one
-  return t#check(expand(file)) ? file :
-    \ t#check(expand(filetype)) ? filetype :
-    \ t#check(expand(skel)) ? filetype :
-    \ ''
-endfunction
-
-function! t#check(file)
-  call t#log('Check ', a:file)
-  return filereadable(a:file)
-endfunction
-
-function! t#load(template, filename)
-  call t#log('Load template ', a:template)
-  silent exe 'keepalt r!tvim --file ' . a:filename . ' --template ' . a:template
+function! t#load(filename)
+  call t#log('Load template for ', a:filename)
+  silent exe 'keepalt r!tvim -d --file ' . a:filename
 endfunction
 
 function! t#config(...)

@@ -1,6 +1,6 @@
 const cli = require('gentle-cli');
 const path = require('path');
-const SEPARATOR = process.platform === 'win32' ? '\\' : '/'
+const SEPARATOR = process.platform === 'win32' ? '\\' : '/';
 
 describe('tvim (1)', () => {
   let filepath = path.join(__dirname, '../bin/tvim');
@@ -16,7 +16,7 @@ describe('tvim (1)', () => {
       .use(`node ${filepath} --file foo.js --template test/templates/javascript.template.js`)
       .expect('MIT')
       .expect('tvim')
-      .expect('vim template plugin thing')
+      .expect('engine for text')
       .expect(0, done);
   });
 

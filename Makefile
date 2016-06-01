@@ -9,8 +9,17 @@ babel:
 
 test: eslint babel mocha
 
+testc: test-cli test-cli-glob
+testcg: test-cli-glob test-cli-glob-none
+
 test-cli:
-	node bin/tvim --file foo.js --template test/templates/javascript.template.js
+	node bin/tvim --file foo.js --template test/templates/javascript.template.js -d
+
+test-cli-glob:
+	node bin/tvim --file bin/foo.js -d
+
+test-cli-glob-none:
+	node bin/tvim --file pazejzepja/foo.js -d
 
 mocha:
 	mocha -R spec
