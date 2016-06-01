@@ -4,20 +4,11 @@
 > [![Build Status](https://travis-ci.org/vimlab/t.vim.svg?branch=master)](https://travis-ci.org/vimlab/t.vim)
 
 It provides a basic CLI `tvim` to parse and evaluate templates using
-Handlebars, and write the result to STDOUT.
+Handlebars, and to write the result to STDOUT.
 
 It was designed to work along the included Vim / Neovim plugin, but
 integrations to other text editors should be a simple process
 ([#atom](https://github.com/vimlab/t.vim/issues/1))
-
-The vim plugin is heavily based on tpope former ztemplate plugin, that was
-found in:
-
-> https://github.com/tpope/tpope/blob/master/.vim/plugin/ztemplate.vim.
-
-Unfortunately, ztemplate is no more and I cannot find it anymore. This plugin
-is based on the git history of my vimfiles repo where I once checked in a copy
-of ztemplate.vim
 
 ## Description
 
@@ -27,6 +18,15 @@ will be used as starting point when creating new buffers.
 Template files may contain variables (`{{ title }}`), which are expanded at the
 time of buffer creation.  The main purpose of the templates is to add
 boilerplate code to new files.
+
+The vim plugin is heavily based on tpope former ztemplate plugin, that was
+found in:
+
+> https://github.com/tpope/tpope/blob/master/.vim/plugin/ztemplate.vim.
+
+Unfortunately, ztemplate is no more and I cannot find it anymore. This plugin
+is based on the git history of my vimfiles repo where I once checked in a copy
+of ztemplate.vim
 
 ## Installation
 
@@ -57,8 +57,9 @@ directory.
 
 `tvim` command is used to parse templates and evaluate them with Handlebars.
 
-It builds template variables based on the provided filename, [t.json](./t.json)
-configuration file and local project `package.json` properties, if it exists.
+It builds template variables based on the provided filename,
+[conf/defs.json](./conf/defs.json) configuration file and local project
+`package.json` properties, if it exists.
 
 **Options**
 
@@ -67,10 +68,12 @@ configuration file and local project `package.json` properties, if it exists.
 
 ### Configuration
 
-`tvim` behavior and default variables can be configured with [t.json](./t.json) file.
+`tvim` behavior and default variables can be configured with
+[`conf/*.json`](./conf) files.
 
 - [Definitions](#definitions) A simple `{ name: command }` mapping to globally
   define template variables.
+
 - [Globs](#globs) Configure minimatch based templates. Great to setup a common
   boilerplate for Models when creating `app/models/*.js` files.
 
@@ -82,19 +85,14 @@ the plugin will try to load a template from `~/vim/templates` directory.
 Templates are loaded using the following search order:
 
 1. First try loading by filename
-2. Then by filetype `filetype.template`
-3. Then by a more general one `t.filetype`
+2. Then by filetype `default.filetype` (or extension)
 
 For instance, `vim foo.js` will try to load `~/.vim/templates/foo.js`, then
-`~/.vim/templates/javascript.template`, then `~/.vim/templates/t.javascript`.
+`~/.vim/templates/default.js`.
 
 See my vim
 [templates](https://github.com/mklabs/vimfiles/tree/master/templates) folder
-for a list of templates for general web / nodejs / vim development.
-
-**Note** The logic to find the best template per filename and extension is in
-vimscript, but may be ported to the cli for easier integration in other
-editors.
+for a list of basic templates for web / nodejs / vim development.
 
 ## Variables
 
@@ -149,15 +147,16 @@ Expands to the string `MIT` by default or the value of package.json "license" pr
 
 Current host name.
 
-Additionnaly, any variable definitions you defined in `t.json` will be used
-instead of the defaults. If a the `filename` is within a project with a
+Additionnaly, any variable definitions you defined in `defs.json` will be used
+instead of the defaults. If the `filename` is within a project with a
 package.json (find up), its fields are used to expand corresponding variables
 in templates.
 
+<a name="definitions" />
 ## Overriding / Defining Variables
 
 You can change the default value of any predefined variables, or add new ones
-using `:TemplateConfig` to edit [t.json](./t.json) configuration file.
+using `:TemplateConfig` to edit [conf/defs.json](./conf/defs.json) configuration file.
 
 For instance, to change the default value of the `{ name }` variables in
 templates, use `{ name: command }` key / value pair:
@@ -193,6 +192,26 @@ let definitions = {
   mail:     'git config --global user.email',
   name:     'git config --global user.name'
 };
+```
+
+If the buffer is within a project with a package.json, every field is defined
+as a template variable as well.
+
+## Globs
+
+The [conf/globs.json](./conf/globs.json) file manages a list of [glob
+patterns](https://github.com/isaacs/node-glob#glob-primer) to register with a
+template file
+
+Ex. `"bin/*": "bin/cli.js"` would expand every file matching the `bin/*`
+pattern with `templates/bin/cli.js`.
+
+```json
+{
+  "bin/*": "bin/cli.js",
+  "app/models/*.js": "rails/js/model.js",
+  "server.js": "node/http/server.js"
+}
 ```
 
 ## Commands
@@ -237,8 +256,3 @@ Plug 'vimlab/t.vim', { do: 'npm install; npm install handlebars' }
 Plug 'vimlab/t.vim', { do: 'npm install; npm install liquid-node' }
 ```
 -->
-
-
----
-
-> Work in progress
