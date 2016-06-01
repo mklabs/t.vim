@@ -1,6 +1,6 @@
 {
   "name": "tvim",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "A minimalist vim template plugin thing. Heavily based on tpope former\r ztemplate plugin.",
   "directories": {
     "bin": "bin",
