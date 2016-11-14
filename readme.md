@@ -87,7 +87,7 @@ It builds template variables based on the provided filename,
 ## Templates
 
 **Vim** When editing a new file (not created yet, eg. BufNewFile is triggered),
-the plugin will try to load a template from `~/vim/templates` directory.
+the plugin will try to load a template from `~/.vim/templates` directory.
 
 Templates are loaded using the following search order:
 
