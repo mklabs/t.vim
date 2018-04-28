@@ -45,7 +45,7 @@ $ npm install tvim -g
 Using [vim-plug](https://github.com/junegunn/vim-plug)
 
 ```vim
-Plug 'vimlab/t.vim', { 'do': 'npm install --prod --cache-min Infinity -g' }
+Plug 'vimlab/t.vim', { 'do': 'npm install -g' }
 " npm: --prod to skip devDependencies
 " npm: --cache-min Infinity to speed up install process
 " npm: -g to make tvim available in $PATH
