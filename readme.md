@@ -5,8 +5,8 @@
 
 ## Description
 
-This is a simple plug-in allowing to have template files per file type, which
-will be used as starting point when creating new buffers.
+This is a simple plug-in one could use to get template files per file type, which
+will be used as a starting point when creating new buffers.
 
 Template files may contain variables (`{{ title }}`), which are expanded at the
 time of buffer creation.  The main purpose of the templates is to add
